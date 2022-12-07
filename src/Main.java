@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Scanner;
 
 public class Main {
     //all Tiles
@@ -13,6 +14,7 @@ public class Main {
     public static Tile selected;
     public static String input;
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         Base.init();
         for (int i = 0; i < 9; i++) {
             columns[i] = new Column(new Tile[0]);
@@ -21,30 +23,33 @@ public class Main {
         }
         for (int j = 0; j < 9; j++) {
             for (int i = 0; i < 9; i++) {
-                Tile temp = new Tile(new int[]{i, j}, i * 9 + j);
+                Tile temp = new Tile(new int[]{i, j}, j * 9 + i, columns[i], rows[j], squares[((j / 3) * 3) + (i / 3)]);
                 all[j * 9 + i] = temp;
                 columns[i].addTo(temp);
                 rows[j].addTo(temp);
                 squares[((j / 3) * 3) + (i / 3)].addTo(temp);
             }
         }
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                int index = (int) (Math.random() * 9);
-                int val = (int) (Math.random() * 9) + 1;
-//                System.out.println("Trying to put value: " + val + " at " + all[index]);
-                if (setLegal(val, columns[i].contents[index])) {
-                    columns[i].contents[index].contents = new int[]{val};
-                    columns[i].contents[index].set = true;
-//                    System.out.println(all[index].contents[0]);
-                    columns[i].contents[index].draw();
-                } else {
-                    j--;
-                }
-            }
-            //System.out.println("There are " + i + " set tiles");
+        prepValues();
+        boolean done = false;
+        while (!done){
+            done = prepValues2();
         }
-        System.out.println("Done");
+        Base.init();
+        int desiredShown = Integer.MIN_VALUE;
+        while(!(desiredShown > 16 && desiredShown < 81)){
+            System.out.println("Please enter the desired number of revealed Tiles (17 - 80):");
+            desiredShown = sc.nextInt();
+        }
+        for (int i = 0; i < 81 - desiredShown; i++) {
+            int index = (int) (Math.random() * 81);
+            if (all[index].set){
+                all[index].set = false;
+                all[index].contents = new int[0];
+            } else {
+                i--;
+            }
+        }
         Base.init();
         while (true) {
             if (StdDraw.isMousePressed() && !mousePressed) {
@@ -97,159 +102,97 @@ public class Main {
     }
     public static void findSimilar(){
         if (selected.contents != null && selected.contents.length == 1){
-            Tile[] similar = {selected};
-            int content = selected.contents[0];
-            for (Tile t:all) {
-                if (!t.equals(selected) && t.contents != null && t.contents.length == 1 && t.contents[0] == content){
-                    Tile[] temp = new Tile[similar.length + 1];
-                    for (int i = 0; i < similar.length; i++) {
-                        temp[i] = similar[i];
-                    }
-                    temp[similar.length] = t;
-                    similar = temp;
-                    t.highlight(Color.CYAN);
-                }
-            }
-            System.out.println("Searching columns");
-            // columns
-            for (Column col: columns) {
-                int count = 0;
-                Tile[] high = new Tile[0];
-                for (Tile t: col.contents) {
-                    for (Tile s: similar) {
-                        if (s.equals(t)){
-                            System.out.println("found similar in column");
-                            count++;
-                            Tile[] temp = new Tile[high.length + 1];
-                            for (int i = 0; i < high.length; i++) {
-                                temp[i] = high[i];
-                            }
-                            temp[high.length] = t;
-                            high = temp;
-                        }
-                    }
-                }
-                if (count >= 2){
-                    for (Tile t: high){
-                        if (!t.equals(selected)){
-                            t.highlight(Color.RED);
-                        }
-                    }
-                }
-            }
-            for (Row row: rows) {
-                int count = 0;
-                Tile[] high = new Tile[0];
-                for (Tile t: row.contents) {
-                    for (Tile s: similar) {
-                        if (s.equals(t)){
-                            System.out.println("found similar in row");
-                            count++;
-                            Tile[] temp = new Tile[high.length + 1];
-                            for (int i = 0; i < high.length; i++) {
-                                temp[i] = high[i];
-                            }
-                            temp[high.length] = t;
-                            high = temp;
-                        }
-                    }
-                }
-                if (count >= 2){
-                    for (Tile t: high) {
-                        if (!t.equals(selected)){
-                            t.highlight(Color.RED);
-                        }
-                    }
-                }
-            }
-            for (Square squ: squares) {
-                int count = 0;
-                Tile[] high = new Tile[0];
-                for (Tile t: squ.contents) {
-                    for (Tile s: similar) {
-                        if (s.equals(t)){
-                            System.out.println("found similar in square");
-                            count++;
-                            Tile[] temp = new Tile[high.length + 1];
-                            for (int i = 0; i < high.length; i++) {
-                                temp[i] = high[i];
-                            }
-                            temp[high.length] = t;
-                            high = temp;
-                        }
-                    }
-                }
-                if (count >= 2){
-                    for (Tile t: high) {
-                        if (!t.equals(selected)){
-                            t.highlight(Color.RED);
-                        }
+            for (Tile t: all) {
+                if (t != selected && t.contents != null && t.contents.length == 1 && t.contents[0] == selected.contents[0]){
+                    if ( t.col == selected.col || t.row == selected.row || t.squ == selected.squ) {
+                        t.highlight(Color.RED);
+                    } else {
+                        t.highlight(Color.CYAN);
                     }
                 }
             }
         }
     }
-    public static boolean setLegal(int c, Tile t){
-        if (t.contents != null && t.contents.length != 0){
-            System.out.println("filled");
-            return false;
-        }
-        Tile[] similar = {t};
-        for (Tile tile: all) {
-            if (!tile.equals(t) && tile.contents != null && tile.contents.length == 1 && tile.contents[0] == c){
-                Tile[] temp = new Tile[similar.length + 1];
-                for (int i = 0; i < similar.length; i++) {
-                    temp[i] = similar[i];
-                }
-                temp[similar.length] = tile;
-                similar = temp;
-            }
-        }
-        // columns
-        for (Column col: columns) {
-            int count = 0;
-            for (Tile tile: col.contents) {
-                for (Tile s: similar) {
-                    if (s == tile){
-                        count++;
-                        System.out.println(s);
+    public static boolean setLegal(int c, Tile tile){
+            for (Tile t: all) {
+                if (t != tile && t.contents != null && t.contents.length == 1 && t.contents[0] == c){
+                    if ( t.col == tile.col || t.row == tile.row || t.squ == tile.squ) {
+                        return false;
                     }
                 }
             }
-            if (count > 1){
-                System.out.println("False (col)");
-                return false;
+        return true;
+    }
+    public static void prepValues(){
+        for (int i = 1; i < 10; i++) {
+            int index = (int) (Math.random() * 9);
+            if (squares[0].contents[index].contents == null){
+                squares[0].contents[index].contents = new int[] {i};
+                squares[0].contents[index].set = true;
+                squares[0].contents[index].draw();
+            } else {
+                i--;
             }
         }
-        for (Row row: rows) {
-            int count = 0;
-            for (Tile tile: row.contents) {
-                for (Tile s: similar) {
-                    if (s == tile){
-                        count++;
+        for (int i = 1; i < 10; i++) {
+            int index = (int) (Math.random() * 9);
+            if (squares[4].contents[index].contents == null){
+                squares[4].contents[index].contents = new int[] {i};
+                squares[4].contents[index].set = true;
+                squares[4].contents[index].draw();
+            } else {
+                i--;
+            }
+        }
+        for (int i = 1; i < 10; i++) {
+            int index = (int) (Math.random() * 9);
+            if (squares[8].contents[index].contents == null){
+                squares[8].contents[index].contents = new int[] {i};
+                squares[8].contents[index].set = true;
+                squares[8].contents[index].draw();
+            } else {
+                i--;
+            }
+        }
+    }
+    public static boolean prepValues2(){
+        //reset Values 2
+        for (int i = 0; i < 9; i++) {
+            if (i % 4 != 0) {
+                for (Tile t : squares[i].contents) {
+                    t.contents = null;
+                    t.set = false;
+                    t.draw();
+                }
+            }
+        }
+        //Try Val 2 Combination
+        for (int i = 0; i < 9; i++) {
+            if (i % 4 != 0) {
+                for (Tile t : squares[i].contents) {
+                    int[] possibleVal = new int[0];
+                    for (int j = 1; j < 10; j++) {
+                        if (setLegal(j, t)){
+                            int[] temp = new int[possibleVal.length + 1];
+                            for (int k = 0; k < possibleVal.length; k++) {
+                                temp[k] = possibleVal[k];
+                            }
+                            temp[possibleVal.length] = j;
+                            possibleVal = temp;
+                        }
+                        else {
+                        }
+                    }
+                    if (possibleVal.length != 0){
+                        t.contents = new int[] {possibleVal[(int) (Math.random() * possibleVal.length)]};
+                        t.set = true;
+                        t.draw();
+                    } else {
+                        return false;
                     }
                 }
             }
-            if (count > 1){
-                System.out.println("False (row)");
-                return false;
-            }
         }
-        for (Square squ: squares) {
-            int count = 0;
-            for (Tile tile: squ.contents) {
-                for (Tile s: similar) {
-                    if (s == tile){
-                        count++;
-                    }
-                }
-            }
-            if (count > 1){
-                System.out.println("False (square)");
-                return false;
-            }
-        }
-        System.out.println("True");
         return true;
     }
 }

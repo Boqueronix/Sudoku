@@ -5,9 +5,15 @@ public class Tile {
     public int id;
     public int[] contents;
     public boolean set = false;
-    public Tile(int[] c, int id){
-        coords = c;
-        this.id = id;
+    public Column col;
+    public Row row;
+    public Square squ;
+    public Tile(int[] coo, int i, Column c, Row r, Square s){
+        coords = coo;
+        id = i;
+        col = c;
+        row = r;
+        squ = s;
     }
     public void draw(){
         if (contents != null && contents.length == 1){
