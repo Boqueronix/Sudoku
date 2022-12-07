@@ -28,6 +28,24 @@ public class Main {
                 squares[((j / 3) * 3) + (i / 3)].addTo(temp);
             }
         }
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                int index = (int) (Math.random() * 9);
+                int val = (int) (Math.random() * 9) + 1;
+//                System.out.println("Trying to put value: " + val + " at " + all[index]);
+                if (setLegal(val, columns[i].contents[index])) {
+                    columns[i].contents[index].contents = new int[]{val};
+                    columns[i].contents[index].set = true;
+//                    System.out.println(all[index].contents[0]);
+                    columns[i].contents[index].draw();
+                } else {
+                    j--;
+                }
+            }
+            //System.out.println("There are " + i + " set tiles");
+        }
+        System.out.println("Done");
+        Base.init();
         while (true) {
             if (StdDraw.isMousePressed() && !mousePressed) {
                 mousePressed = true;
@@ -50,15 +68,15 @@ public class Main {
         selected.highlight(Color.YELLOW);
     }
     public static void assignValue(String str){
-        if (str.length() == 0){
+        if (str.length() == 0 && !selected.set){
             selected.contents = new int[0];
-        }else if (str.length() == 1){
+        }else if (str.length() == 1 && !selected.set){
             try {
                 selected.contents = new int[] {Integer.parseInt(str)};
             } catch (Exception e) {
                 System.out.println("Please input a proper int");
             }
-        }else if (str.length() < 10){
+        }else if (str.length() < 10 && !selected.set){
             try {
                 int[] tbr = new int[0];
                 for (int i = 0; i < str.length(); i++) {
@@ -73,6 +91,8 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Please input a proper int array");
             }
+        } else {
+            System.out.println("Cant alter set tile");
         }
     }
     public static void findSimilar(){
@@ -168,5 +188,68 @@ public class Main {
                 }
             }
         }
+    }
+    public static boolean setLegal(int c, Tile t){
+        if (t.contents != null && t.contents.length != 0){
+            System.out.println("filled");
+            return false;
+        }
+        Tile[] similar = {t};
+        for (Tile tile: all) {
+            if (!tile.equals(t) && tile.contents != null && tile.contents.length == 1 && tile.contents[0] == c){
+                Tile[] temp = new Tile[similar.length + 1];
+                for (int i = 0; i < similar.length; i++) {
+                    temp[i] = similar[i];
+                }
+                temp[similar.length] = tile;
+                similar = temp;
+            }
+        }
+        // columns
+        for (Column col: columns) {
+            int count = 0;
+            for (Tile tile: col.contents) {
+                for (Tile s: similar) {
+                    if (s == tile){
+                        count++;
+                        System.out.println(s);
+                    }
+                }
+            }
+            if (count > 1){
+                System.out.println("False (col)");
+                return false;
+            }
+        }
+        for (Row row: rows) {
+            int count = 0;
+            for (Tile tile: row.contents) {
+                for (Tile s: similar) {
+                    if (s == tile){
+                        count++;
+                    }
+                }
+            }
+            if (count > 1){
+                System.out.println("False (row)");
+                return false;
+            }
+        }
+        for (Square squ: squares) {
+            int count = 0;
+            for (Tile tile: squ.contents) {
+                for (Tile s: similar) {
+                    if (s == tile){
+                        count++;
+                    }
+                }
+            }
+            if (count > 1){
+                System.out.println("False (square)");
+                return false;
+            }
+        }
+        System.out.println("True");
+        return true;
     }
 }

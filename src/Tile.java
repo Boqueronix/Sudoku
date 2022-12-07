@@ -41,4 +41,7 @@ public class Tile {
         StdDraw.setPenRadius(0.005);
         StdDraw.square((coords[0] + 0.5) / 9.0, (coords[1] + 0.5) / 9.0, 1 / 18.0);
     }
+    public String toString(){
+        return "Tile at column: " + coords[0] + ", and row: " + coords[1];
+    }
 }

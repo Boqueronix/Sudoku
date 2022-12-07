@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="89d0dfbb-92af-474f-9f81-f6f175b1fd50" name="Changes" comment="STDDRAW">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Column.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/JFraming.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Row.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Square.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/SpringUtilities.java" afterDir="false" />
+    <list default="true" id="89d0dfbb-92af-474f-9f81-f6f175b1fd50" name="Changes" comment="Project Fail; Can't ever find a possible combination answer">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tile.java" afterDir="false" />
@@ -40,7 +34,8 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true"
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/jgons/IdeaProjects/AdventOfCode"
   }
 }]]></component>
   <component name="RunManager">
@@ -87,7 +82,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670345004163</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="All works minus set Numbers">
+      <created>1670384716519</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1670384716519</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -105,6 +107,18 @@
     <MESSAGE value="Base files" />
     <MESSAGE value="Progress" />
     <MESSAGE value="STDDRAW" />
-    <option name="LAST_COMMIT_MESSAGE" value="STDDRAW" />
+    <MESSAGE value="All works minus set Numbers" />
+    <option name="LAST_COMMIT_MESSAGE" value="All works minus set Numbers" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Main.java</url>
+          <line>32</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
